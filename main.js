@@ -1,5 +1,6 @@
 const { app, screen, ipcMain, BrowserWindow } = require('electron')
 const path = require('node:path')
+const os = require('os')
 
 // The modal window runs the actual application.
 const createModalWindow = () => {
@@ -18,7 +19,8 @@ const createModalWindow = () => {
 
 	// Required for macOS; modal level must be 1 below root level.
 	win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-	win.setHiddenInMissionControl(true)
+	if (os.platform() === "darwin")
+		win.setHiddenInMissionControl(true)
 	win.setAlwaysOnTop(true, 'pop-up-menu', 1)
 
 	// Load the modal browser from a preset URL.
@@ -57,11 +59,12 @@ const createRootWindow = () => {
 
 	// Root window must have a window level ABOVE the modal window!
 	win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-	win.setHiddenInMissionControl(true)
+	if (os.platform() === "darwin")
+		win.setHiddenInMissionControl(true)
 	win.setAlwaysOnTop(true, 'screen-saver', 1)
 	
 	// Load an HTML string containing a bare button/text to avoid extra files.
-	win.loadURL("data:text/html;charset=utf-8," + encodeURI('<body style="display: flex; align-items: center;"><div style="flex-grow: 1; user-select: none; font-size: 30px; font-weight:bold; font-family: sans-serif; text-align: center;">EHR</div></body>'))
+	win.loadURL("data:text/html;charset=utf-8," + encodeURI('<body style="display: flex; align-items: center; background-color: navy;"><div style="flex-grow: 1; user-select: none; color: red; font-size: 30px; font-weight:bold; font-style: italic; font-family: sans-serif; text-align: center;">EHR</div></body>'))
 	
 	// Add a click listener to activate our preload IPC function.
 	win.webContents.on('did-finish-load', () => {
@@ -81,6 +84,7 @@ app.whenReady().then(() => {
 	// of the modal window.
 	ipcMain.on('toggle', (event, x) => {
 		modal.isVisible() ? modal.hide() : modal.show()
+		root.show() // must always be top-most! (required for Windows)
 	})
 
 	// If enabled, closing the modal window will close the root window, which
