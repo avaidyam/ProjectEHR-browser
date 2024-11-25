@@ -1,0 +1,34 @@
+{
+    "name": "ehr-host",
+    "version": "1.0.0",
+    "author": "",
+    "description": "",
+    "main": "main.js",
+    "license": "ISC",
+    "build": {
+        "appId": "com.avaidyam.ehr",
+        "productName": "Project EHR",
+        "copyright": "Copyright © 2024 Project EHR",
+        "mac": {
+            "target": [
+                "zip"
+            ]
+        },
+        "win": {
+            "publisherName": "Project EHR",
+            "target": [
+                "portable"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "electron .",
+        "dist": "electron-builder --mac --win portable",
+        "win": "electron-builder build --win portable"
+    },
+    "devDependencies": {
+        "electron": "^33.2.0",
+        "electron-builder": "^25.1.8"
+    }
+}
